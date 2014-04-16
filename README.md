@@ -32,7 +32,7 @@
 
 ## 原来是啥样子
 
-<table width="450" align="center" border="1">
+<table width="450" align="center" border="0">
     <tbody align="center">
         <tr>
             <td rowspan="3">
@@ -260,7 +260,7 @@
     </tbody>
 </table>
 
-<table width="450" align="center" border="1">
+<table width="450" align="center" border="0">
     <tbody align="center">
         <tr>
             <td rowspan="3">
@@ -483,7 +483,7 @@
     </tbody>
 </table>
 
-<table width="450" align="center" border="1">
+<table width="450" align="center" border="0">
     <tbody align="center">
         <tr>
             <td rowspan="3">
@@ -719,7 +719,7 @@
     </tbody>
 </table>
 
-<table border="1" width="450" align="center">
+<table border="0" width="450" align="center">
     <tbody align="center">
         <tr>
             <td  rowspan="3">
