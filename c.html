@@ -1,0 +1,123 @@
+<html>
+  <head>
+    <title>Character Connection</title>
+    <style>
+        body {
+    background: #fff;
+    padding:0;
+    margin:0;
+    font-family:helvetica,arial;
+    overflow: hidden;
+  }
+
+  .graph {
+    width:100%;
+    height: 100%;
+    fill: #000;
+    overflow: hidden;
+    position: relative;
+  }
+
+  g.dimmed  {
+    stroke-opacity: 0.05;
+  }
+
+  g.dimmed text.shadow {
+    stroke-opacity: 0;
+  }
+
+  circle {
+    fill: #ccc;
+    stroke: #333;
+    stroke-width: 1.5px;
+  }
+
+  text {
+    font: 10px sans-serif;
+    pointer-events: none;
+  }
+
+  text.shadow {
+    stroke: #fff;
+    stroke-width: 3px;
+    stroke-opacity: .8;
+  }
+
+  path.link {
+    fill: none;
+    stroke: #666;
+    stroke-width: 1.5px;
+  }
+
+  path.link.licensing {
+    stroke: green;
+  }
+
+  path.link.resolved {
+    stroke-dasharray: 0,2 1;
+  }
+
+
+  .control-zoom {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    background: rgba(0, 0, 0, 0.25);
+    padding: 5px;
+    border-radius: 7px;
+    z-index: 100;
+  }
+
+  .control-zoom a {
+    background: rgba(255, 255, 255, 0.75);
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+    display: block;
+    width: 19px;
+    height: 19px;
+    border-radius: 4px;
+  }
+
+  .control-zoom a:last-child {
+    margin: 0;
+  }
+
+  .control-zoom a:hover {
+    background-color: white;
+  }
+
+  .control-zoom > .control-zoom-in {
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJAQMAAADaX5RTAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyBpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNSBXaW5kb3dzIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOkUwRTZCRkI3NjQzNzExRTBBQUI3RTAwMUU2MTZDRkQ5IiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOkUwRTZCRkI4NjQzNzExRTBBQUI3RTAwMUU2MTZDRkQ5Ij4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6RTBFNkJGQjU2NDM3MTFFMEFBQjdFMDAxRTYxNkNGRDkiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6RTBFNkJGQjY2NDM3MTFFMEFBQjdFMDAxRTYxNkNGRDkiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz7cwPMXAAAABlBMVEUAAAD///+l2Z/dAAAAAnRSTlP/AOW3MEoAAAARSURBVAhbY3jcwABBcAATAQBxlwhT4XiahwAAAABJRU5ErkJggg==);
+    margin-bottom: 5px;
+  }
+
+  .control-zoom > .control-zoom-out {
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJAQMAAADaX5RTAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyBpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNSBXaW5kb3dzIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOkU5MjRDMEQ5NjQzNzExRTBCM0JDQkU2MzVGQTBCNjRDIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOkU5MjRDMERBNjQzNzExRTBCM0JDQkU2MzVGQTBCNjRDIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6RTkyNEMwRDc2NDM3MTFFMEIzQkNCRTYzNUZBMEI2NEMiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6RTkyNEMwRDg2NDM3MTFFMEIzQkNCRTYzNUZBMEI2NEMiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz7uh53jAAAABlBMVEUAAAD///+l2Z/dAAAAAnRSTlP/AOW3MEoAAAARSURBVAhbY/jfwABBcAATAQB6xwj7vHGbwAAAAABJRU5ErkJggg==);
+    margin-bottom: 5px;
+  }
+
+    </style>
+  </head>
+
+  <body>
+    <div class="graph">
+      <div class="control-zoom">
+          <a class="control-zoom-in" href="#" title="Zoom in"></a>
+          <a class="control-zoom-out" href="#" title="Zoom out"></a>
+        </div>
+    </div>
+
+    <script src="lib/d3.js"></script>
+    <script src="lib/underscore.js"></script>
+    <script src="lib/jquery.js"></script>
+
+    <script>
+      var getGraphData = function() { return {"directed":true,"multigraph":false,"graph":[],"nodes":[{"id":"丁奉"},{"id":"凌操"},{"id":"朱桓"},{"id":"潘璋"},{"id":"乐进"},{"id":"于禁"},{"id":"张辽"},{"id":"张郃"},{"id":"徐晃"},{"id":"曹昂"},{"id":"曹洪"},{"id":"于吉"},{"id":"左慈"},{"id":"张角"},{"id":"诸葛亮"},{"id":"陈登"},{"id":"曹仁"},{"id":"满宠"},{"id":"关索"},{"id":"关羽"},{"id":"关银萍"},{"id":"费祎"},{"id":"华佗"},{"id":"张飞"},{"id":"赵云"},{"id":"马超"},{"id":"魏延"},{"id":"黄忠"},{"id":"典韦"},{"id":"华雄"},{"id":"曹丕"},{"id":"许褚"},{"id":"刘备"},{"id":"孙尚香"},{"id":"孟获"},{"id":"法正"},{"id":"祝融"},{"id":"姜维"},{"id":"甑姬"},{"id":"贾诩"},{"id":"文丑"},{"id":"董卓"},{"id":"司马懿"},{"id":"曹操"},{"id":"吕布"},{"id":"丁原"},{"id":"貂蝉"},{"id":"陈宫"},{"id":"吕蒙"},{"id":"周瑜"},{"id":"太史慈"},{"id":"孙坚"},{"id":"孙权"},{"id":"甘宁"},{"id":"陆逊"},{"id":"周泰"},{"id":"凌统"},{"id":"张昭"},{"id":"徐盛"},{"id":"程普"},{"id":"陆抗"},{"id":"小乔"},{"id":"夏侯惇"},{"id":"郭嘉"},{"id":"夏侯氏"},{"id":"卞氏"},{"id":"张绣"},{"id":"王异"},{"id":"大乔"},{"id":"孙策"},{"id":"步练师"},{"id":"甄姬"},{"id":"黄盖"},{"id":"关兴"},{"id":"袁绍"},{"id":"徐庶"},{"id":"张春华"},{"id":"黄月英"},{"id":"蔡文姬"},{"id":"颜良"},{"id":"杨修"},{"id":"司马昭"},{"id":"鲁肃"},{"id":"甘夫人"},{"id":"袁术"},{"id":"高顺"},{"id":"李儒"},{"id":"纪灵"},{"id":"马谡"},{"id":"严颜"},{"id":"刘表"}],"links":[{"source":0,"target":1},{"source":0,"target":2},{"source":0,"target":3},{"source":4,"target":5},{"source":4,"target":6},{"source":4,"target":7},{"source":4,"target":8},{"source":4,"target":9},{"source":4,"target":10},{"source":11,"target":12},{"source":11,"target":13},{"source":11,"target":14},{"source":11,"target":15},{"source":5,"target":4},{"source":5,"target":6},{"source":5,"target":7},{"source":5,"target":8},{"source":5,"target":16},{"source":5,"target":17},{"source":18,"target":19},{"source":18,"target":20},{"source":18,"target":21},{"source":19,"target":22},{"source":19,"target":23},{"source":19,"target":24},{"source":19,"target":25},{"source":19,"target":26},{"source":19,"target":27},{"source":28,"target":29},{"source":28,"target":8},{"source":28,"target":30},{"source":28,"target":16},{"source":28,"target":31},{"source":28,"target":26},{"source":32,"target":33},{"source":32,"target":34},{"source":32,"target":35},{"source":32,"target":36},{"source":22,"target":19},{"source":22,"target":37},{"source":22,"target":38},{"source":22,"target":39},{"source":29,"target":28},{"source":29,"target":40},{"source":29,"target":16},{"source":29,"target":41},{"source":42,"target":6},{"source":42,"target":30},{"source":42,"target":43},{"source":42,"target":39},{"source":44,"target":45},{"source":44,"target":13},{"source":44,"target":41},{"source":44,"target":46},{"source":44,"target":39},{"source":44,"target":47},{"source":48,"target":49},{"source":48,"target":50},{"source":48,"target":51},{"source":48,"target":52},{"source":48,"target":53},{"source":48,"target":54},{"source":55,"target":56},{"source":55,"target":57},{"source":55,"target":58},{"source":55,"target":59},{"source":55,"target":60},{"source":49,"target":48},{"source":49,"target":50},{"source":49,"target":51},{"source":49,"target":61},{"source":49,"target":53},{"source":49,"target":54},{"source":62,"target":7},{"source":62,"target":8},{"source":62,"target":46},{"source":62,"target":63},{"source":64,"target":65},{"source":64,"target":66},{"source":64,"target":67},{"source":64,"target":36},{"source":68,"target":33},{"source":68,"target":69},{"source":68,"target":61},{"source":68,"target":70},{"source":50,"target":48},{"source":50,"target":49},{"source":50,"target":37},{"source":50,"target":51},{"source":50,"target":53},{"source":50,"target":25},{"source":37,"target":22},{"source":37,"target":50},{"source":37,"target":23},{"source":37,"target":71},{"source":51,"target":48},{"source":51,"target":49},{"source":51,"target":50},{"source":51,"target":33},{"source":51,"target":52},{"source":51,"target":53},{"source":33,"target":32},{"source":33,"target":68},{"source":33,"target":51},{"source":33,"target":61},{"source":52,"target":48},{"source":52,"target":69},{"source":52,"target":58},{"source":52,"target":53},{"source":69,"target":68},{"source":69,"target":52},{"source":69,"target":53},{"source":69,"target":72},{"source":34,"target":73},{"source":34,"target":32},{"source":34,"target":36},{"source":34,"target":14},{"source":61,"target":49},{"source":61,"target":68},{"source":61,"target":33},{"source":61,"target":70},{"source":13,"target":45},{"source":13,"target":11},{"source":13,"target":44},{"source":13,"target":12},{"source":13,"target":41},{"source":13,"target":39},{"source":6,"target":4},{"source":6,"target":5},{"source":6,"target":42},{"source":6,"target":7},{"source":6,"target":8},{"source":6,"target":43},{"source":7,"target":4},{"source":7,"target":5},{"source":7,"target":62},{"source":7,"target":6},{"source":7,"target":8},{"source":7,"target":74},{"source":23,"target":19},{"source":23,"target":37},{"source":23,"target":24},{"source":23,"target":25},{"source":23,"target":26},{"source":23,"target":27},{"source":75,"target":12},{"source":75,"target":76},{"source":75,"target":46},{"source":75,"target":77},{"source":8,"target":4},{"source":8,"target":5},{"source":8,"target":28},{"source":8,"target":62},{"source":8,"target":6},{"source":8,"target":7},{"source":8,"target":31},{"source":8,"target":63},{"source":58,"target":55},{"source":58,"target":52},{"source":58,"target":53},{"source":58,"target":60},{"source":40,"target":29},{"source":40,"target":78},{"source":40,"target":79},{"source":30,"target":28},{"source":30,"target":42},{"source":30,"target":43},{"source":30,"target":71},{"source":16,"target":5},{"source":16,"target":28},{"source":16,"target":29},{"source":16,"target":25},{"source":43,"target":42},{"source":43,"target":6},{"source":43,"target":30},{"source":43,"target":63},{"source":80,"target":81},{"source":80,"target":43},{"source":80,"target":63},{"source":35,"target":32},{"source":35,"target":14},{"source":35,"target":24},{"source":3,"target":0},{"source":3,"target":1},{"source":3,"target":2},{"source":71,"target":22},{"source":71,"target":37},{"source":71,"target":30},{"source":71,"target":63},{"source":53,"target":48},{"source":53,"target":49},{"source":53,"target":50},{"source":53,"target":51},{"source":53,"target":52},{"source":53,"target":69},{"source":53,"target":58},{"source":53,"target":82},{"source":36,"target":20},{"source":36,"target":32},{"source":36,"target":64},{"source":36,"target":34},{"source":41,"target":45},{"source":41,"target":29},{"source":41,"target":44},{"source":41,"target":13},{"source":41,"target":74},{"source":41,"target":39},{"source":78,"target":40},{"source":78,"target":70},{"source":78,"target":83},{"source":78,"target":77},{"source":74,"target":7},{"source":74,"target":41},{"source":74,"target":84},{"source":31,"target":28},{"source":31,"target":8},{"source":31,"target":85},{"source":31,"target":26},{"source":14,"target":32},{"source":14,"target":34},{"source":14,"target":35},{"source":14,"target":24},{"source":46,"target":44},{"source":46,"target":62},{"source":46,"target":75},{"source":46,"target":77},{"source":39,"target":45},{"source":39,"target":42},{"source":39,"target":44},{"source":39,"target":13},{"source":39,"target":41},{"source":39,"target":39},{"source":24,"target":19},{"source":24,"target":23},{"source":24,"target":35},{"source":24,"target":25},{"source":24,"target":27},{"source":24,"target":77},{"source":63,"target":62},{"source":63,"target":8},{"source":63,"target":43},{"source":63,"target":71},{"source":54,"target":48},{"source":54,"target":49},{"source":54,"target":82},{"source":47,"target":44},{"source":47,"target":15},{"source":47,"target":79},{"source":47,"target":85},{"source":15,"target":11},{"source":15,"target":86},{"source":15,"target":47},{"source":15,"target":85},{"source":79,"target":40},{"source":79,"target":87},{"source":79,"target":47},{"source":88,"target":89},{"source":88,"target":37},{"source":88,"target":14},{"source":25,"target":19},{"source":25,"target":50},{"source":25,"target":23},{"source":25,"target":16},{"source":25,"target":24},{"source":25,"target":27},{"source":85,"target":90},{"source":85,"target":31},{"source":85,"target":47},{"source":85,"target":15},{"source":26,"target":19},{"source":26,"target":28},{"source":26,"target":23},{"source":26,"target":31},{"source":82,"target":49},{"source":82,"target":53},{"source":82,"target":54},{"source":82,"target":27},{"source":27,"target":19},{"source":27,"target":23},{"source":27,"target":24},{"source":27,"target":25},{"source":27,"target":82},{"source":27,"target":72},{"source":77,"target":75},{"source":77,"target":78},{"source":77,"target":46},{"source":77,"target":24},{"source":72,"target":56},{"source":72,"target":69},{"source":72,"target":57},{"source":72,"target":27}]};};
+
+      
+    </script>
+
+    <script src="lib/d3-graph.js"></script>
+
+  </body>
+</html>
